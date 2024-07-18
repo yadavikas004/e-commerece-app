@@ -8,14 +8,18 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="config-server" />
+        <module name="notification" />
         <module name="product" />
         <module name="discovery" />
+        <module name="payment" />
         <module name="customer" />
         <module name="order" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="e-commerce-app" target="17" />
+      <module name="nutritionreports" target="17" />
+      <module name="security" target="17" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
@@ -24,8 +28,12 @@
       <module name="customer" options="-parameters" />
       <module name="discovery" options="-parameters" />
       <module name="e-commerce-app" options="-parameters" />
+      <module name="notification" options="-parameters" />
+      <module name="nutritionreports" options="-parameters" />
       <module name="order" options="-parameters" />
+      <module name="payment" options="-parameters" />
       <module name="product" options="-parameters" />
+      <module name="security" options="-parameters" />
     </option>
   </component>
 </project>

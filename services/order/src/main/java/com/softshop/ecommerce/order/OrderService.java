@@ -6,10 +6,16 @@ import com.softshop.ecommerce.kafka.OrderConfirmation;
 import com.softshop.ecommerce.kafka.OrderProducer;
 import com.softshop.ecommerce.orderline.OrderLineRequest;
 import com.softshop.ecommerce.orderline.OrderLineService;
+import com.softshop.ecommerce.payment.PaymentClient;
+import com.softshop.ecommerce.payment.PaymentRequest;
 import com.softshop.ecommerce.product.ProductClient;
 import com.softshop.ecommerce.product.PurchaseRequest;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -21,6 +27,7 @@ public class OrderService {
     private final OrderMapper orderMapper;
     private final OrderLineService orderLineService;
     private final OrderProducer orderProducer;
+    private final PaymentClient paymentClient;
     public Integer createdOrder(OrderRequest orderRequest) {
         // check the customer --> OpenFeign
         var customer = this.customerClient.findCustomerById(orderRequest.customerId())
@@ -45,6 +52,16 @@ public class OrderService {
         }
 
         //start payment process
+        var paymentRequest = new PaymentRequest(
+                orderRequest.amount(),
+                orderRequest.paymentMethod(),
+                order.getId(),
+                order.getReference(),
+                customer
+        );
+        paymentClient.requestOrderPayment(paymentRequest);
+
+        //sent order confirmation
         orderProducer.sendOrderConfirmation(
                 new OrderConfirmation(
                         orderRequest.reference(),
@@ -57,5 +74,18 @@ public class OrderService {
 
         //send the order confirmation --> notification-ms (kafka)
         return order.getId();
+    }
+
+    public List<OrderResponse> findAll() {
+        return orderRepository.findAll()
+                .stream()
+                .map(orderMapper::fromOrder)
+                .collect(Collectors.toList());
+    }
+
+    public OrderResponse findById(Integer orderId) {
+        return orderRepository.findById(orderId)
+                .map(orderMapper::fromOrder)
+                .orElseThrow(()-> new EntityNotFoundException(String.format("No order found with the provided ID: %d",orderId)));
     }
 }
