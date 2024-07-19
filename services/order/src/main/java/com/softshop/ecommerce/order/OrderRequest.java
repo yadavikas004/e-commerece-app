@@ -1,5 +1,6 @@
 package com.softshop.ecommerce.order;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.softshop.ecommerce.product.PurchaseRequest;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
@@ -9,6 +10,9 @@ import jakarta.validation.constraints.Positive;
 import java.math.BigDecimal;
 import java.util.List;
 
+import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_EMPTY;
+
+@JsonInclude(NON_EMPTY)
 public record OrderRequest(
         Integer id,
         String reference,

@@ -23,7 +23,6 @@ public class ProductClient {
     @Value("${application.config.product-url}")
     private String productUrl;
 
-    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     private final RestTemplate restTemplate;
 
     public List<PurchaseResponse> purchaseProducts(List<PurchaseRequest> requestBody){

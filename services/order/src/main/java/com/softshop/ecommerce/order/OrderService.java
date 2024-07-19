@@ -11,6 +11,7 @@ import com.softshop.ecommerce.payment.PaymentRequest;
 import com.softshop.ecommerce.product.ProductClient;
 import com.softshop.ecommerce.product.PurchaseRequest;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -28,6 +29,7 @@ public class OrderService {
     private final OrderLineService orderLineService;
     private final OrderProducer orderProducer;
     private final PaymentClient paymentClient;
+    @Transactional
     public Integer createdOrder(OrderRequest orderRequest) {
         // check the customer --> OpenFeign
         var customer = this.customerClient.findCustomerById(orderRequest.customerId())
